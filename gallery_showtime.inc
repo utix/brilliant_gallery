@@ -11,6 +11,10 @@ function render_brilliant_gallery($paramarray = array()) {
     $thisfolder = $paramarray[1];
   }
 
+  /* sanitize url:
+   * Replace '&amp;' (happens if tags are edited in rich text editors) by '&'.
+   */
+  $thisfolder = str_replace("&amp;", "&", $thisfolder);
   $colcountoverride = @$paramarray[2];
 
   $widthoverride = @$paramarray[3];
@@ -170,7 +174,6 @@ function render_brilliant_gallery($paramarray = array()) {
     $showcaption = '';
   }
   else {
-    #$showcaption = $captionyesornot;
     $showcaption = $captionyesnotext;
   }
   $padding = variable_get('brilliant_gallery_padding', 3);
