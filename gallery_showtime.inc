@@ -116,21 +116,6 @@ function render_brilliant_gallery($paramarray = array()) {
   #$result = '</p>';
   $result = '';
   $galleryfolder = variable_get('brilliant_gallery_folder', '');
-  /*
-    if (substr($galleryfolder, strlen($galleryfolder) - 1, 1) == '/' or substr($galleryfolder, 0, 1) == '/') {
-    #watchdog('error', 'failed to notify "weblogs.com" (site)');
-    #form_set_error('yemail', t('Header injection attempt detected.  Do not enter line feed characters into the from field!'));
-    $bgmsg = 'Main gallery folder path must not begin or end with a slash; please fix it at /admin/settings/brilliant_gallery';
-    drupal_set_message($bgmsg);
-    watchdog('Brilliant Gal',$bgmsg);
-    return;
-    }
-   */
-  /*
-    if ($thisfolder <> '') {
-    $galleryfolder .= '/'. $thisfolder;
-    }
-   */
   if ($thisfolder <> '') {
     if ($galleryfolder <> '') {
       #$galleryfolder .= '/' . $thisfolder;
