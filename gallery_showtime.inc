@@ -1,5 +1,9 @@
 <?php
 
+function start_with($haystack, $needle) {
+  return substr($haystack, 0, strlen($needle)) === $needle;
+}
+
 function render_brilliant_gallery($paramarray = array()) {
 
   $thisfolder = '';
@@ -56,47 +60,39 @@ function render_brilliant_gallery($paramarray = array()) {
   // E.g. https://plus.google.com/u/0/photos/104031880678382567653/albums/5641519066949458241?authkey=CMiq-vWZvIvaaA
   $picasawebsignature = 'http://plus.google.com/';
   $picasawebsignaturesecure = 'https://plus.google.com/';
-  if (substr($thisfolder, 0, strlen($picasawebsignature)) == $picasawebsignature OR substr($thisfolder, 0, strlen($picasawebsignaturesecure)) == $picasawebsignaturesecure) {
+  if (start_with($thisfolder, $picasawebsignature) || start_with($thisfolder, $picasawebsignaturesecure)) {
     // Get the authkey, if any, from the URL query
-    $urlquery = parse_url($thisfolder,PHP_URL_QUERY);
+    $urlquery = parse_url($thisfolder, PHP_URL_QUERY);
     parse_str($urlquery, $parsedquery);
     $authkey = '';
-    if (@$parsedquery['authkey'] <> ''){
+    if (!empty($parsedquery['authkey'])) {
       $authkey = 'Gv1sRg'.$parsedquery['authkey'];
-      //dpm($authkey);
     }
     // Get the IDs from URL path
     $urlpath = parse_url($thisfolder,PHP_URL_PATH);
-    $urlpath = explode('/',$urlpath);
-    //if ($urlpath[1] == 'photos' AND $urlpath[3] == 'albums' AND is_numeric($urlpath[2]) AND is_numeric($urlpath[4])){
-      $picasauserid = '';
-      $picasaalbumid = '';
-      foreach($urlpath as $key=>$val){
-        if (is_numeric($val) AND strlen($val) > 10 AND $picasauserid == ''){
-          $picasauserid = $val;
-        }
-        else if (is_numeric($val) AND strlen($val) > 10 AND $picasauserid <> ''){
-          $picasaalbumid = $val;
-        }
+    $urlpath = explode('/', $urlpath);
+    $picasauserid = '';
+    $picasaalbumid = '';
+    foreach($urlpath as $key => $val){
+      if (is_numeric($val) && strlen($val) > 10 && $picasauserid == '') {
+        $picasauserid = $val;
       }
-      // OK we've got all needed to construct a picasaweb feed URL
-      $thisfolder = 'https://picasaweb.google.com/data/feed/base/user/'.$picasauserid.'/albumid/'.$picasaalbumid.'?alt=rss&kind=photo';
-      if ($authkey <> ''){
-        $thisfolder .= '&authkey='.$authkey;
+      else if (is_numeric($val) && strlen($val) > 10 && !empty($picasauserid)) {
+        $picasaalbumid = $val;
+        break;
       }
-      //dpm('>>> '.$thisfolder);
-    //}
+    }
+    // OK we've got all needed to construct a picasaweb feed URL
+    $thisfolder = "https://picasaweb.google.com/data/feed/base/user/$picasauserid/albumid/$picasaalbumid?alt=rss&kind=photo";
+    if (!empty($authkey)) {
+      $thisfolder .= "&authkey=$authkey";
+    }
   }
   // Is this a Picasa gallery?
-  $picasafolder = false;
   $picasawebsignature = 'http://picasaweb.google.';
   $picasawebsignaturesecure = 'https://picasaweb.google.';
-  if (substr($thisfolder, 0, strlen($picasawebsignature)) == $picasawebsignature OR substr($thisfolder, 0, strlen($picasawebsignaturesecure)) == $picasawebsignaturesecure) {
-    // Must work for all variants - http://picasaweb.google.com, http://picasaweb.google.co.uk, etc.
-    // Replace '&amp;' (happens if tags are edited in rich text editors) by '&'.
-    $thisfolder = str_replace("&amp;", "&", $thisfolder);
-    $picasafolder = true;
-  }
+  // Must work for all variants - http://picasaweb.google.com, http://picasaweb.google.co.uk, etc.
+  $picasafolder = start_with($thisfolder, $picasawebsignature) || start_with($thisfolder, $picasawebsignaturesecure);
 
   // See if one or more particular images were asked to be shown.
   $thumbshowbyname = array();
