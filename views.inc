@@ -131,15 +131,13 @@ function brilliant_gallery_views_handler_image_img($fieldinfo, $fielddata, $valu
   # Now get a list of images and choose one of them.
   $absolpath = realpath(FILE_DIRECTORY_PATH . '/' . variable_get('brilliant_gallery_folder', '') . '/' . $string);
   # Load Directory Into Array
-  $poct = -1;
   $retval = array();
   $handle = @opendir($absolpath);
   while ($file = readdir($handle)) {
-    $poct++;
     if (!is_img($file)) {
         continue;
     }
-    $retval[$poct] = $file;
+    $retval[] = $file;
   }
   closedir($handle);
   #print_r( $retval );
