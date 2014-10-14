@@ -118,9 +118,9 @@ function brilliant_gallery_views_handler_image_img($fieldinfo, $fielddata, $valu
    */
 
   $tmp = $data->nid;
-  $query = "SELECT SQL_CACHE `field_gallery_value` FROM `content_type_page` WHERE `nid` = '" . $tmp . "' ORDER BY `vid` DESC LIMIT 1";
+  $query = "SELECT SQL_CACHE `field_gallery_value` FROM `content_type_page` WHERE `nid` = :nid ORDER BY `vid` DESC LIMIT 1";
   // TODO Please convert this statement to the D7 database API syntax.
-  $string = db_query($query)->fetchField();
+  $string = db_query($query, array(':nid' => $data->nid)->fetchField();
   $string = str_replace(array('[bg|', ']'), '', $string);
   if (strpos($string, '|') !== false) {
     $string = substr($string, 0, (strpos($string, '|')));
