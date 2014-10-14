@@ -89,6 +89,16 @@ function brilliant_gallery_views_tables() {
   return $tables;
 }
 
+
+/* Check if a file is an image
+ * TODO: use file_info
+ */
+function is_img($filename)
+{
+    $ending = strtolower(substr($filename, -4, 4));
+    return in_array($ending, array('.jpg', 'jpeg', '.gif', '.png'));
+}
+
 /**
  * Views handler for displaying the image.
  */
@@ -125,10 +135,9 @@ function brilliant_gallery_views_handler_image_img($fieldinfo, $fielddata, $valu
   $retval = array();
   $handle = @opendir($absolpath);
   while ($file = readdir($handle)) {
-    $poct += 1;
-    $testending = strtolower(substr($file, -4, 4));
-    if (strtolower($testending) <> '.jpg' and strtolower($testending) <> 'jpeg' and strtolower($testending) <> '.gif' and strtolower($testending) <> '.png') {
-      continue;
+    $poct++;
+    if (!is_img($file)) {
+        continue;
     }
     $retval[$poct] = $file;
   }
