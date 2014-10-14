@@ -116,16 +116,18 @@ function render_brilliant_gallery($paramarray = array()) {
   #$result = '</p>';
   $result = '';
   $galleryfolder = variable_get('brilliant_gallery_folder', '');
-  if ($thisfolder <> '') {
-    if ($galleryfolder <> '') {
-      #$galleryfolder .= '/' . $thisfolder;
-      $galleryfolder .= ( substr($thisfolder, 0, 1) == '/' ? '' : '/') . $thisfolder; // See http://drupal.org/node/176939#comment-1494648
+  if (!empty($thisfolder)) {
+    if (!empty($galleryfolder)) {
+      /* XXX:Add leading /
+       * See http://drupal.org/node/176939#comment-1494648
+       */
+      $galleryfolder .= (($thisfolder{0} == '/') ? '' : '/') . $thisfolder;
     }
     else {
       $galleryfolder = $thisfolder;
     }
   }
-  if ($colcountoverride == '') {
+  if (empty($colcountoverride)) {
     $columns = variable_get('brilliant_gallery_maxcol', 3);
   }
   else {
@@ -485,24 +487,24 @@ function render_brilliant_gallery($paramarray = array()) {
         #}
 
         switch ($overbrowser) {
-          case 'thickbox':
-            $result .= ' class="thickbox"';
-            $result .= ' rel="img_' . $setname . '"';
-            #$attributes['class'] = $link_class;
-            #$attributes['rel'] = 'img_' . ($node->nid? $node->nid: time()); // 'insert' has no $node->nid
-            break;
+        case 'thickbox':
+          $result .= ' class="thickbox"';
+          $result .= ' rel="img_' . $setname . '"';
+          #$attributes['class'] = $link_class;
+          #$attributes['rel'] = 'img_' . ($node->nid? $node->nid: time()); // 'insert' has no $node->nid
+          break;
 
-          case 'lightbox':
-            $result .= ' rel="lightbox[' . $setname . ']"';
-            #$attributes['rel'] = 'lightbox[' . ($node->nid? $node->nid: time()) . ']'; // 'insert' has no $node->nid
-            break;
+        case 'lightbox':
+          $result .= ' rel="lightbox[' . $setname . ']"';
+          #$attributes['rel'] = 'lightbox[' . ($node->nid? $node->nid: time()) . ']'; // 'insert' has no $node->nid
+          break;
 
-          case 'greybox':
-            $result .= ' class="greybox"';
-            break;
+        case 'greybox':
+          $result .= ' class="greybox"';
+          break;
 
-          default:
-            break;
+        default:
+          break;
         }
 
         if ($showcaption <> '') {
